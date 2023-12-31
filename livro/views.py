@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from usuarios.models import Usuario
 from django.http import HttpResponse
-from .models import Livros
+from .models import Livros, Emprestimos
 
 def home(request):
     if request.session.get('usuario'):
@@ -12,5 +12,12 @@ def home(request):
         return redirect('/auth/login/?status=2')
     
 def ver_livros(request, id):
-    livros = Livros.objects.get(id=id)
-    return render(request, 'ver_livro.html', {'livro': livros})
+    if request.session.get('usuario'):
+        livros = Livros.objects.get(id=id)
+        if request.session.get('usuario') == livros.usuario.id:
+            emprestimos = Emprestimos.objects.filter(livro=livros)
+            return render(request, 'ver_livro.html', {'livro': livros, 'emprestimos': emprestimos})
+        else:
+            return HttpResponse('Esse livro não é seu')
+    else:
+        return redirect('/auth/login/?status=2')
