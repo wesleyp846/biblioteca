@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load filtros %}
 
 {% block 'conteudo' %}
 
@@ -48,7 +49,7 @@
           {% endif %}
           <td>{{emprestimo.data_emprestimo}}</td>
           <td>{{emprestimo.data_devolucao}}</td>
-          <td>Calculando</td>
+          <td>{{ emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo}} Dias</td>
         </tr>
       {% endfor %}
       </tbody>
