@@ -18,11 +18,21 @@ def ver_livros(request, id):
         livros = Livros.objects.get(id=id)
         if request.session.get('usuario') == livros.usuario.id:
             emprestimos = Emprestimos.objects.filter(livro=livros)
-            return render(request, 'ver_livro.html', {'livro': livros, 'emprestimos': emprestimos, 'usuario_logado': request.session.get('usuario')})
+            form= CadastroLivro() 
+            return render(request, 'ver_livro.html', {'livro': livros, 'emprestimos': emprestimos, 'usuario_logado': request.session.get('usuario'), 'form': form})
         else:
             return HttpResponse('Esse livro não é seu')
     else:
         return redirect('/auth/login/?status=2')
     
 def cadastrar_livro(request):
-    return HttpResponse('Cadastrando Livro')
+    # Só permite ao formulario navegar por essa url, digitando na barra de endereço  ele proibe
+    if request.method == 'POST':
+        # Recebe os dados do formulario
+        form = CadastroLivro(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponse('Cadastrado com sucesso')
+        else:
+            return HttpResponse('Erro ao cadastrar')
