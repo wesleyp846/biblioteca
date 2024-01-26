@@ -1,4 +1,4 @@
-    
+# Projeto em pausa    
     python manage.py createsuperuser
     admin
     1234
